@@ -1,9 +1,5 @@
 # Finnplay test task for front-end developer
 
-## Info
-
-- https://www.figma.com/file/totoTYpycpBnizdqV7nEUu/gamelist_2?type=design&node-id=0-1&t=0B9nGFE0Gtp5ol3Q-0
-
 ## Task
 
 You need to develop an application that allows users to filter games by multiple criteria.
