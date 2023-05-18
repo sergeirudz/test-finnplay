@@ -1,0 +1,26 @@
+@use './colors';
+
+@mixin label {
+  font-family: 'Prompt';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+  text-transform: capitalize;
+}
+
+@mixin button {
+  font-family: 'Prompt';
+  width: 100%;
+  border: 0;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  height: 64px;
+  background-color: colors.$yellow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+}
