@@ -1,0 +1,25 @@
+@use '../styles/colors' as *;
+@use '../styles/typography' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 70px;
+  width: 70px;
+  margin-bottom: 40px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 412px;
+}
+
+
+
