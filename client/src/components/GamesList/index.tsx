@@ -1,6 +1,6 @@
-import Filters from './Filters';
+import Filters from '../Filters';
 import Games from './Games';
-import styles from './GamesList.module.scss';
+import styles from './index.module.scss';
 
 type Props = {};
 

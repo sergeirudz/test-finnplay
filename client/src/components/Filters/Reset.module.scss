@@ -20,6 +20,7 @@
 
   h4 {
     @include label;
+    text-transform: unset;
     color: colors.$black_semi;
   }
 }

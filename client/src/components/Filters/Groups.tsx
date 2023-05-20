@@ -4,10 +4,12 @@ import styles from './Groups.module.scss';
 type Props = {
   title: string;
   data: { id: number; name: string }[];
-  active: boolean;
+  sort: (items: CheckedItems) => void;
 };
 
-const Groups = ({ title, data, active }: Props) => {
+export type CheckedItems = string[];
+
+const Groups = ({ title, data, sort }: Props) => {
   const [checkedItems, setCheckedItems] = useState([]);
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -17,6 +19,8 @@ const Groups = ({ title, data, active }: Props) => {
     } else {
       setCheckedItems(checkedItems.filter((item) => item !== name));
     }
+
+    sort(checkedItems);
   };
 
   return (

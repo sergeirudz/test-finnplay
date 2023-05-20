@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import styles from './Sort.module.scss';
 
 type Props = {
-  sortGames: (sort: string) => void;
+  sort: (sort: string) => void;
   title: string;
 };
 
@@ -12,13 +12,13 @@ export enum SortOptions {
   NEWEST = 'newest',
 }
 
-const Sort = ({ sortGames, title }: Props) => {
+const Sort = ({ sort, title }: Props) => {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     setSelectedOption(value);
-    sortGames(value);
+    sort(value);
   };
 
   return (
