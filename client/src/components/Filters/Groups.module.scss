@@ -1,0 +1,32 @@
+@use '../../styles/colors';
+@import '../../styles/typography';
+
+.item {
+  h4 {
+    @include label;
+    color: colors.$black_semi;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    row-gap: 15px;
+    margin-top: 10px;
+
+    li {
+      @include label;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-radius: 4px;
+      padding: 5px 10px;
+      color: colors.$black_dark;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .active {
+      background: colors.$yellow;
+    }
+  }
+}
