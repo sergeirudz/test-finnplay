@@ -1,0 +1,15 @@
+@use '../../styles/colors';
+@import '../../styles/typography';
+
+.container {
+  width: 100%;
+
+  h4 {
+    @include label;
+    color: colors.$black_semi;
+  }
+
+  input[type='range'] {
+    width: 100%;
+  }
+}
