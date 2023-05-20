@@ -6,9 +6,11 @@ import Sort from './Sort';
 import styles from './index.module.scss';
 import Reset from './Reset';
 
-type Props = {};
+type Props = {
+  setColumns: (option: string) => void;
+};
 
-const Filters = (props: Props) => {
+const Filters = ({ setColumns }: Props) => {
   const [games, setGames] = useState();
 
   const sortGames = (option) => {
@@ -41,13 +43,17 @@ const Filters = (props: Props) => {
     console.log('reset');
   };
 
+  // const setColumns = (option: string) => {
+  //   console.log('setColumns', option);
+  // };
+
   return (
     <div className={styles.container}>
       <Search />
       <Groups title="Providers" data={PROVIDERS} sort={sortProviders} />
       <Groups title="Game groups" data={GROUPS} sort={sortGroups} />
       <Sort title="Sorting" sort={sortGames} />
-      <Columns title="columns" />
+      <Columns title="columns" setColumns={setColumns} />
       <Reset games={3800} reset={handleReset} />
     </div>
   );

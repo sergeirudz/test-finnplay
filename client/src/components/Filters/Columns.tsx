@@ -1,28 +1,20 @@
-import { useState } from 'react';
 import styles from './Columns.module.scss';
 
 type Props = {
   title: string;
+  setColumns: (option: string) => void;
 };
 
-const Columns = ({ title }: Props) => {
-  const [columns, setColumns] = useState();
-
-  const handleChange = (e) => {
-    setColumns(e.target.value);
-    console.log('columns', columns);
-  };
-
+const Columns = ({ title, setColumns }: Props) => {
   return (
     <div className={styles.container}>
       <h4>{title}</h4>
       <input
         type="range"
-        min="1"
-        max="3"
+        min="2"
+        max="4"
         step="1"
-        value={columns}
-        onChange={(e) => handleChange(e)}
+        onChange={(e) => setColumns(e.target.value)}
       />
     </div>
   );
