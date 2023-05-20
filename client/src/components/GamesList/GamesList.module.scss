@@ -1,0 +1,9 @@
+@import '../../styles/mixins';
+
+.main {
+  @include container;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  margin-top: 75px;
+}
