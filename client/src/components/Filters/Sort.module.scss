@@ -1,0 +1,70 @@
+@use '../../styles/colors';
+@import '../../styles/typography';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: center;
+  width: 100%;
+  gap: 15px;
+
+  h4 {
+    @include label;
+    color: colors.$black_semi;
+  }
+
+  .sorting {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    list-style: none;
+
+    .option {
+      @include label;
+      padding: 0;
+      margin: 0;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+
+      input[type='radio'] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+        cursor: 'pointer';
+      }
+
+      label {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .active {
+    background: colors.$yellow;
+  }
+}
+
+.option {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    row-gap: 15px;
+    margin-top: 10px;
+
+    li {
+      @include label;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-radius: 4px;
+      padding: 5px 10px;
+      color: colors.$black_dark;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+}
