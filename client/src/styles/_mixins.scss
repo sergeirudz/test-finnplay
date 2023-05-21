@@ -1,5 +1,10 @@
 @use './breakpoints';
+@import './mediaQueries';
 
 @mixin container {
   max-width: breakpoints.$lg;
+
+  @include devices(xs) {
+    padding: 0 24px;
+  }
 }

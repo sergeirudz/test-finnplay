@@ -1,0 +1,31 @@
+$xs: 0px;
+$sm: 428px;
+$md: 900px;
+$lg: 1276px;
+$xl: 1536px;
+
+@mixin devices($breakpoint) {
+  @if $breakpoint == xs {
+    @media only screen and (min-width: $xs) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == sm {
+    @media only screen and (min-width: $sm) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == md {
+    @media only screen and (min-width: $md) {
+      @content;
+    }
+  }
+
+  @if $breakpoint == lg {
+    @media only screen and (min-width: $lg) {
+      @content;
+    }
+  }
+}
