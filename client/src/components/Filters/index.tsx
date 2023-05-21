@@ -12,6 +12,7 @@ type Props = {
 
 const Filters = ({ setColumns }: Props) => {
   const [games, setGames] = useState();
+  const [hidden, setHidden] = useState(false);
 
   const sortGames = (option) => {
     const sortedGames = [...games];
@@ -48,13 +49,35 @@ const Filters = ({ setColumns }: Props) => {
   // };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${hidden && styles.hidden}`}>
       <Search />
-      <Groups title="Providers" data={PROVIDERS} sort={sortProviders} />
-      <Groups title="Game groups" data={GROUPS} sort={sortGroups} />
-      <Sort title="Sorting" sort={sortGames} />
+      <Groups
+        title="Providers"
+        data={PROVIDERS}
+        sort={sortProviders}
+        hidden={hidden}
+      />
+      <Groups
+        title="Game groups"
+        data={GROUPS}
+        sort={sortGroups}
+        hidden={hidden}
+      />
+      <Sort title="Sorting" sort={sortGames} hidden={hidden} />
       <Columns title="columns" setColumns={setColumns} />
-      <Reset games={3800} reset={handleReset} />
+      <Reset games={3800} reset={handleReset} hidden={hidden} />
+      <button
+        className={styles.hideFiltersBtn}
+        onClick={() => setHidden(!hidden)}
+      >
+        <img
+          src="/assets/hamburger.svg"
+          alt="arrow"
+          height="14px"
+          width="14px"
+        />
+        <span>Hide filters</span>
+      </button>
     </div>
   );
 };

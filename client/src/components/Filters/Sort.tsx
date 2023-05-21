@@ -4,6 +4,7 @@ import styles from './Sort.module.scss';
 type Props = {
   sort: (sort: string) => void;
   title: string;
+  hidden?: boolean;
 };
 
 export enum SortOptions {
@@ -12,7 +13,7 @@ export enum SortOptions {
   NEWEST = 'newest',
 }
 
-const Sort = ({ sort, title }: Props) => {
+const Sort = ({ sort, title, hidden }: Props) => {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +23,10 @@ const Sort = ({ sort, title }: Props) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{ display: hidden ? 'none' : 'flex' }}
+    >
       <h4>{title}</h4>
       <ul className={styles.sorting}>
         <li

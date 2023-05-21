@@ -5,11 +5,12 @@ type Props = {
   title: string;
   data: { id: number; name: string }[];
   sort: (items: CheckedItems) => void;
+  hidden?: boolean;
 };
 
 export type CheckedItems = string[];
 
-const Groups = ({ title, data, sort }: Props) => {
+const Groups = ({ title, data, sort, hidden }: Props) => {
   const [checkedItems, setCheckedItems] = useState([]);
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +25,7 @@ const Groups = ({ title, data, sort }: Props) => {
   };
 
   return (
-    <div className={styles.item}>
+    <div className={styles.item} style={{ display: hidden ? 'none' : 'block' }}>
       <h4>{title}</h4>
       <ul>
         {data.map((item) => (

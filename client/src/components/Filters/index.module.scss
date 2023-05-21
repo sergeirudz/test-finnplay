@@ -1,3 +1,7 @@
+@use '../../styles//colors';
+@import '../../styles/mediaQueries';
+@import '../../styles/typography';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -10,5 +14,43 @@
   background: #ffffff;
   border: 1px solid #f2f2f2;
   border-radius: 8px;
-  max-width: 412px;
+
+  @include devices(xs) {
+    margin: auto;
+    max-width: 100%;
+  }
+
+  @include devices(sm) {
+    margin: auto;
+    max-width: 412px;
+  }
+
+  @include devices(lg) {
+    margin: 0;
+  }
+}
+
+.hidden {
+  height: 179px;
+  overflow: hidden;
+}
+
+.hideFiltersBtn {
+  @include label;
+  text-transform: unset;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  color: colors.$links;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  @include devices(lg) {
+    display: none;
+  }
 }
