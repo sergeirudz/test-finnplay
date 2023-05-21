@@ -1,8 +1,17 @@
 @use '../../styles/colors';
 @import '../../styles/typography';
+@import '../../styles/mediaQueries';
 
 .container {
   width: 100%;
+
+  @include devices(xs) {
+    display: none;
+  }
+
+  @include devices(lg) {
+    display: block;
+  }
 
   h4 {
     @include label;
