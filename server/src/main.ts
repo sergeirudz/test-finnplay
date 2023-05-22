@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
   app.enableCors({
-    origin: FRONTEND_URL,
+    origin: true,
     credentials: true,
   });
   await app.listen(SERVER_PORT);

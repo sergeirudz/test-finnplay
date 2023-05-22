@@ -9,8 +9,10 @@ import * as Yup from 'yup';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from './Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Input from './Input';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const FormSchema = Yup.object().shape({
   login: Yup.string().required('Username is required'),
@@ -23,6 +25,7 @@ type FormValuesProps = {
 };
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -37,7 +40,23 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: FormValuesProps) => {
-    console.log('data', data);
+    const response = await axios.post(
+      'user/login',
+      {
+        username: data.login,
+        password: data.password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    axios.defaults.headers.common[
+      'Authorization'
+    ] = `Bearer ${response.data.token}`;
+
+    if (response.status === 200 && response.data.token) {
+      navigate('/');
+    }
   };
 
   return (
