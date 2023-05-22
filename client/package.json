@@ -26,6 +26,7 @@
     "yup": "^1.1.1"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^4.29.7",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-redux": "^7.1.25",
