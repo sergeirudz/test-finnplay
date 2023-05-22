@@ -1,19 +1,23 @@
+import { useSelector } from 'react-redux';
 import styles from './Reset.module.scss';
+import { resetFilter, selectNrOfGames } from '../../store/slices/filterSlice';
+import { useDispatch } from 'react-redux';
 
 type Props = {
-  games: number;
-  reset: () => void;
   hidden?: boolean;
 };
 
-const Reset = ({ games, reset, hidden }: Props) => {
+const Reset = ({ hidden }: Props) => {
+  const dispatch = useDispatch();
+  const games = useSelector(selectNrOfGames);
+
   return (
     <div
       className={styles.container}
       style={{ display: hidden ? 'none' : 'flex' }}
     >
       <h4>Games amount: {games}</h4>
-      <button onClick={reset}>Reset</button>
+      <button onClick={() => dispatch(resetFilter())}>Reset</button>
     </div>
   );
 };

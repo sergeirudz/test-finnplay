@@ -1,26 +1,20 @@
-import { ChangeEvent, useState } from 'react';
 import styles from './Sort.module.scss';
+import { useDispatch } from 'react-redux';
+import {
+  SortOptions,
+  selectSorting,
+  setSorting,
+} from '../../store/slices/filterSlice';
+import { useSelector } from 'react-redux';
 
 type Props = {
-  sort: (sort: string) => void;
   title: string;
   hidden?: boolean;
 };
 
-export enum SortOptions {
-  NAME_ASC = 'name-asc',
-  NAME_DESC = 'name-desc',
-  NEWEST = 'newest',
-}
-
-const Sort = ({ sort, title, hidden }: Props) => {
-  const [selectedOption, setSelectedOption] = useState('');
-
-  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSelectedOption(value);
-    sort(value);
-  };
+const Sort = ({ title, hidden }: Props) => {
+  const dispatch = useDispatch();
+  const sorting = useSelector(selectSorting);
 
   return (
     <div
@@ -31,7 +25,7 @@ const Sort = ({ sort, title, hidden }: Props) => {
       <ul className={styles.sorting}>
         <li
           className={`${styles.option} ${
-            selectedOption === SortOptions.NAME_ASC && styles.active
+            sorting === SortOptions.NAME_ASC && styles.active
           }`}
         >
           <label>
@@ -39,15 +33,15 @@ const Sort = ({ sort, title, hidden }: Props) => {
               type="radio"
               name="sort-option"
               value={SortOptions.NAME_ASC}
-              checked={selectedOption === SortOptions.NAME_ASC}
-              onChange={handleSortChange}
+              checked={sorting === SortOptions.NAME_ASC}
+              onChange={() => dispatch(setSorting(SortOptions.NAME_ASC))}
             />
             A-Z
           </label>
         </li>
         <li
           className={`${styles.option} ${
-            selectedOption === SortOptions.NAME_DESC && styles.active
+            sorting === SortOptions.NAME_DESC && styles.active
           }`}
         >
           <label>
@@ -55,24 +49,24 @@ const Sort = ({ sort, title, hidden }: Props) => {
               type="radio"
               name="sort-option"
               value={SortOptions.NAME_DESC}
-              checked={selectedOption === SortOptions.NAME_DESC}
-              onChange={handleSortChange}
+              checked={sorting === SortOptions.NAME_DESC}
+              onChange={() => dispatch(setSorting(SortOptions.NAME_DESC))}
             />
             Z-A
           </label>
         </li>
         <li
           className={`${styles.option} ${
-            selectedOption === SortOptions.NEWEST && styles.active
+            sorting === SortOptions.NEWEST && styles.active
           }`}
         >
           <label>
             <input
               type="radio"
               name="sort-option"
-              value="newest"
-              checked={selectedOption === 'newest'}
-              onChange={handleSortChange}
+              value={SortOptions.NEWEST}
+              checked={sorting === SortOptions.NEWEST}
+              onChange={() => dispatch(setSorting(SortOptions.NEWEST))}
             />
             Newest
           </label>

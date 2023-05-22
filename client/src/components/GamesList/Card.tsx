@@ -1,13 +1,12 @@
-import { Link } from 'react-router-dom';
 import styles from './Card.module.scss';
+import { Game } from '.';
 
-type Props = {};
-
-const Card = (props: Props) => {
+const Card = (props: Game) => {
+  const { cover, coverLarge, date, id, name, provider } = props;
   return (
-    <Link to="#" className={styles.card}>
-      <img src="https://placehold.co/196x141" alt="Game" />
-    </Link>
+    <div className={styles.card}>
+      <img src={cover} alt={name} title={name} />
+    </div>
   );
 };
 

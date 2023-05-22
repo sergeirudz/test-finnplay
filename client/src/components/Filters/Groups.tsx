@@ -1,64 +1,103 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import styles from './Groups.module.scss';
+import { Group, Provider } from '../GamesList';
+import { useSelector } from 'react-redux';
+import {
+  SortOptions,
+  selectGroups,
+  selectProviders,
+  selectSorting,
+} from '../../store/slices/filterSlice';
 
 type Props = {
   title: string;
-  data: { id: number; name: string }[];
+  data: Item;
   sort: (items: CheckedItems) => void;
   hidden?: boolean;
+  isFetching: number;
 };
+
+type Item = Provider[] | Group[];
 
 export type CheckedItems = string[];
 
-const Groups = ({ title, data, sort, hidden }: Props) => {
-  const [checkedItems, setCheckedItems] = useState([]);
+const Groups = ({ title, data = [], sort, hidden, isFetching }: Props) => {
+  const [checkedItems, setCheckedItems] = useState<any>([]);
+  const providers = useSelector(selectProviders);
+  const groups = useSelector(selectGroups);
+  const sorting = useSelector(selectSorting);
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = event.target;
-    if (checked) {
-      setCheckedItems([...checkedItems, name] as never);
-    } else {
-      setCheckedItems(checkedItems.filter((item) => item !== name));
+  useEffect(() => {
+    if (
+      providers.length === 0 &&
+      groups.length === 0 &&
+      sorting === SortOptions.NEWEST
+    ) {
+      setCheckedItems([]);
     }
+  }, [providers, groups, sorting]);
 
-    sort(checkedItems);
+  const handleCheckboxChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    item: Provider | Group
+  ) => {
+    const name = event.target.name;
+    const isChecked = event.target.checked;
+
+    if (isChecked) {
+      setCheckedItems([...checkedItems, item]);
+    } else {
+      setCheckedItems(
+        checkedItems.filter((item: Provider | Group) => item.name !== name)
+      );
+    }
   };
+
+  useEffect(() => {
+    sort(checkedItems);
+  }, [checkedItems]);
 
   return (
     <div className={styles.item} style={{ display: hidden ? 'none' : 'block' }}>
       <h4>{title}</h4>
       <ul>
-        {data.map((item) => (
-          <li
-            key={item.id}
-            className={
-              checkedItems.includes(item.name as never) ? styles.active : ''
-            }
-          >
-            <input
-              type="checkbox"
-              name={item.name}
-              id={item.name}
-              onChange={handleCheckboxChange}
-              className={styles.checkbox}
-              style={{
-                position: 'absolute',
-                opacity: 0,
-                cursor: 'pointer',
-              }}
-            />
-            <label htmlFor={item.name} style={{ cursor: 'pointer' }}>
-              {item.name}
-            </label>
-          </li>
-        ))}
+        {isFetching && data.length === 0 ? (
+          <p>Loading...</p>
+        ) : (
+          data.map((item: Provider | Group) => (
+            <li
+              key={item.id}
+              className={
+                checkedItems.includes(item as never) ? styles.active : ''
+              }
+            >
+              <input
+                type="checkbox"
+                name={item.name}
+                id={item.name}
+                onChange={(e) => handleCheckboxChange(e, item)}
+                className={styles.checkbox}
+                style={{
+                  position: 'absolute',
+                  opacity: 0,
+                  cursor: 'pointer',
+                }}
+                checked={checkedItems.includes(item as never)}
+              />
+              <label
+                htmlFor={item.name}
+                style={{
+                  cursor: 'pointer',
+                }}
+              >
+                {item.name}
+              </label>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
-};
-
-type ItemProps = {
-  name: string;
 };
 
 export default Groups;
