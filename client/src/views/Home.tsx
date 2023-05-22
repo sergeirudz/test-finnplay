@@ -3,9 +3,8 @@ import GamesList from '../components/GamesList';
 import NavBar from '../components/NavBar';
 import styles from './Home.module.scss';
 import { selectAuth } from '../store/slices/authSlice';
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { redirect } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ const Home = () => {
 
   useEffect(() => {
     if (!auth) {
-      console.log("navigate('/login');");
       return navigate('/login');
     }
   }, [auth]);
