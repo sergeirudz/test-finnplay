@@ -3,8 +3,6 @@
 .container {
   max-width: 844px;
   display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
-  // grid-template-rows: repeat(auto-fill, minmax(141px, 1fr));
   grid-gap: 20px;
   align-items: stretch;
 
@@ -23,19 +21,35 @@
 
   @include devices(lg) {
     grid-template-columns: repeat(4, minmax(196px, 1fr));
-    // grid-template-rows: repeat(2, minmax(141px, 1fr));
   }
 }
 
 .columns_2 {
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  @include devices(xs) {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  @include devices(md) {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
 }
 
 .columns_3 {
-  grid-template-columns: repeat(3, minmax(268px, 1fr));
+  @include devices(xs) {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+  @include devices(md) {
+    grid-template-columns: repeat(3, minmax(268px, 1fr));
+  }
   grid-template-rows: repeat(auto-fill, minmax(191px, 1fr));
 }
 
 .columns_4 {
-  grid-template-columns: repeat(4, minmax(196px, 1fr));
+  @include devices(xs) {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  @include devices(md) {
+    grid-template-columns: repeat(4, minmax(196px, 1fr));
+  }
 }
