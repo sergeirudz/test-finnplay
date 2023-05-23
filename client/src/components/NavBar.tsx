@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styles from './NavBar.module.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import {
-  selectAuth,
   selectUsername,
   setAuth,
   setUsername,

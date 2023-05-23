@@ -1,15 +1,8 @@
 import styles from './LoginForm.module.scss';
-import {
-  Controller,
-  FieldValues,
-  UseFormRegister,
-  useForm,
-} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from './Button';
-import { useEffect, useState } from 'react';
 import Input from './Input';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -27,10 +20,9 @@ type FormValuesProps = {
 const LoginForm = () => {
   const navigate = useNavigate();
   const {
-    control,
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useForm<FormValuesProps>({
     resolver: yupResolver(FormSchema),
     defaultValues: {

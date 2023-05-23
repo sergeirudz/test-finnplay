@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import LoginForm from '../components/LoginForm';
 import { selectAuth } from '../store/slices/authSlice';
 import styles from './Login.module.scss';
-import { redirect, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
 const Login = () => {
