@@ -9,8 +9,8 @@ type Props = {
 const ShowPasswordIcon = ({ active, ...rest }: Props) => {
   return (
     <svg
-      width="40"
-      height="20"
+      width="35"
+      height="auto"
       viewBox="0 0 16 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
