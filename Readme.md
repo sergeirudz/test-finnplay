@@ -1,4 +1,33 @@
-# Finnplay test task for front-end developer
+# Start project
+
+- Run Server & Client simultaneously
+- Login with
+  - user: player1
+  - pass: player1
+
+## Server
+
+- cd server
+- nvm use
+- npm run start:dev
+
+## Client
+
+- cd client
+- nvm use
+- npm run dev
+
+# Info
+
+## Time Spent
+
+![Time Spent](https://github.com/sergeirudz/test-finnplay/blob/master/timespent.png?raw=true)
+
+## Postman Test API
+
+[Postman collection](server/test-finnplay.postman_collection.json)
+
+# Old info
 
 ## Task
 
