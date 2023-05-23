@@ -1,25 +1,52 @@
-import styles from './Search.module.scss';
+import { useQueryClient } from '@tanstack/react-query';
 import Select, {
   StylesConfig,
   components,
   DropdownIndicatorProps,
 } from 'react-select';
 
-type Props = {};
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  selectSortByName,
+  setSortByName,
+} from '../../store/slices/filterSlice';
+import { useSelector } from 'react-redux';
 
-const Search = (props: Props) => {
+const Search = () => {
+  const queryClient = useQueryClient();
+  const [options, setOptions] = useState([]);
+  const dispatch = useDispatch();
+  const sortByName = useSelector(selectSortByName);
+
+  useEffect(() => {
+    (async () => {
+      const data: any = queryClient.getQueryData(['games']);
+      const OPTIONS = data?.data?.games.map((game: any) => ({
+        ...game,
+        value: game.name,
+        label: game.name,
+      }));
+      setOptions(OPTIONS);
+    })();
+  }, []);
+
   return (
-    <Select
-      classNamePrefix="select"
-      styles={customStyles}
-      components={{ DropdownIndicator }}
-      closeMenuOnSelect={false}
-      // isLoading={isLoading}
-      isSearchable={true}
-      name="Search"
-      placeholder="Search"
-      // options={}
-    />
+    <>
+      <Select
+        classNamePrefix="select"
+        styles={customStyles}
+        components={{ DropdownIndicator }}
+        closeMenuOnSelect={true}
+        isSearchable={true}
+        name="Search"
+        placeholder="Search"
+        options={options}
+        onChange={(e) => dispatch(setSortByName(e))}
+        value={sortByName}
+        key={`search_${sortByName}`}
+      />
+    </>
   );
 };
 

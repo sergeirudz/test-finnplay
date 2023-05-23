@@ -20,10 +20,12 @@ const Filters = ({ setColumns }: Props) => {
   const dispatch = useDispatch();
 
   const sortProviders = (option: CheckedItems) => {
+    if (option.length === 0) return;
     dispatch(setProviders(option));
   };
 
   const sortGroups = (option: CheckedItems) => {
+    if (option.length === 0) return;
     dispatch(setGroups(option));
   };
 

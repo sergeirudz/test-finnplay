@@ -7,7 +7,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  auth: false,
+  auth: true, // TODO set to false
   username: '',
 };
 

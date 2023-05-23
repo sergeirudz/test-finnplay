@@ -6,6 +6,7 @@ import {
   SortOptions,
   selectGroups,
   selectProviders,
+  selectSortByName,
   selectSorting,
   setNrOfGames,
 } from '../../store/slices/filterSlice';
@@ -19,10 +20,11 @@ type Props = {
 };
 
 const Games = ({ columnNumber }: Props) => {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<Game[] | undefined>([]);
   const providers = useSelector(selectProviders);
   const groups = useSelector(selectGroups);
   const sorting = useSelector(selectSorting);
+  const sortByName = useSelector(selectSortByName);
   const isFetching = useIsFetching();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -78,6 +80,13 @@ const Games = ({ columnNumber }: Props) => {
     return sortedGames;
   };
 
+  const findGameById = (
+    games: Game[],
+    id: string | number
+  ): Game | undefined => {
+    return games.find((game) => game.id === id);
+  };
+
   useEffect(() => {
     (async () => {
       const data: any = await queryClient.getQueryData(['games']);
@@ -101,7 +110,14 @@ const Games = ({ columnNumber }: Props) => {
       );
       const sortedGames = sortGames(filteredGames, sorting);
 
-      if (groups.length === 0 && providers.length !== 0) {
+      if (sortByName !== null) {
+        const foundGameByName = findGameById(data.data.games, sortByName.id);
+
+        const arr = [];
+        arr.push(foundGameByName as any);
+        setGames(arr);
+        console.log('foundGameByName', foundGameByName);
+      } else if (groups.length === 0 && providers.length !== 0) {
         setGames(gamesFilteredByProviders);
         dispatch(setNrOfGames(gamesFilteredByProviders.length));
       } else if (providers.length === 0 && groups.length !== 0) {
@@ -115,7 +131,7 @@ const Games = ({ columnNumber }: Props) => {
         dispatch(setNrOfGames(sortedGames.length));
       }
     })();
-  }, [providers, groups, sorting]);
+  }, [providers, groups, sorting, sortByName]);
 
   return (
     <div className={`${styles.container} ${columns}`}>
