@@ -13,9 +13,10 @@ type Props = {
 
 const Input = ({ label, register, required, showIcon, type }: Props) => {
   const [show, setShow] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const id = useId();
   const [isFocused, setIsFocused] = useState(false);
+  const { onChange, name, ref } = register(label, { required });
 
   const handleFocus = () => {
     if (inputRef.current?.value !== '') return;
@@ -34,12 +35,16 @@ const Input = ({ label, register, required, showIcon, type }: Props) => {
           {label}
         </label>
         <input
-          {...register(label, { required })}
+          onChange={onChange}
+          name={name}
           type={type === 'password' && show ? 'text' : type}
           id={id}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          // ref={inputRef} // TODO - fix this
+          ref={(e) => {
+            ref(e);
+            inputRef.current = e;
+          }}
         />
       </div>
       {showIcon && show ? (
