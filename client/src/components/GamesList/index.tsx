@@ -36,7 +36,19 @@ const GamesList = () => {
 
   useQuery({
     queryKey: ['games'],
-    queryFn: async () => await axios.get('/games'),
+    queryFn: async () => {
+      const refresh = await axios.post(
+        'user/refresh',
+        {},
+        { withCredentials: true }
+      );
+
+      const token = refresh.data.token;
+      axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+      return await axios.get('/games', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    },
     onSuccess: (data) => {
       setNrOfGames(data.data.games.length);
     },
