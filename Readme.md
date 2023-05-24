@@ -1,3 +1,5 @@
+![FinnPlay](https://github.com/sergeirudz/test-finnplay/blob/master/client/public/assets/finnplay.png?raw=true)
+
 # Start project
 
 - Run Server & Client simultaneously
