@@ -8,7 +8,7 @@ import { AuthGuard } from 'src/guards/auth.guard';
 @Controller('games')
 export class GamesController {
   @Get()
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   async getGames(@Res() res: Response): Promise<any> {
     const file = createReadStream(join(process.cwd(), 'data.json'));
     file.pipe(res);
