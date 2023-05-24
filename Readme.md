@@ -11,12 +11,14 @@
 
 - cd server
 - nvm use
+- npm i
 - npm run start:dev
 
 ## Client
 
 - cd client
 - nvm use
+- npm i
 - npm run dev
 
 # Info
