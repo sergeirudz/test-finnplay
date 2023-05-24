@@ -6,13 +6,14 @@ import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { Token } from './token.entity';
 import { TokenService } from './token.service';
+import { JWT_SECRET } from 'src/config/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Token]),
     JwtModule.register({
       global: true,
-      secret: 'fnqdG89lavVw702t', //! openssl rand -base64 12
+      secret: JWT_SECRET,
       signOptions: { expiresIn: '1w' },
     }),
   ],
