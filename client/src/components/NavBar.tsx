@@ -1,39 +1,23 @@
 import { useEffect } from 'react';
 import styles from './NavBar.module.scss';
-import axios from 'axios';
-import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
-import {
-  selectUsername,
-  setAuth,
-  setUsername,
-} from '../store/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { useLogoutUserMutation } from '../store/apis/authApi';
 
 const NavBar = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const username = useSelector(selectUsername);
+  const username = '123';
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get('user/user');
-        dispatch(setUsername(data.username));
-        dispatch(setAuth(true));
-      } catch (error) {
-        dispatch(setAuth(false));
-      }
-    })();
-  }, []);
+  const [logoutUser, { isLoading, isSuccess, error, isError }] =
+    useLogoutUserMutation();
 
   const handleLogout = async () => {
-    await axios.post('user/logout', {}, { withCredentials: true });
-    axios.defaults.headers.common['Authorization'] = '';
-    dispatch(setAuth(false));
-    dispatch(setUsername(''));
-    navigate('/login');
+    logoutUser();
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      window.location.href = '/login';
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   return (
     <div className={styles.container}>
