@@ -16,7 +16,6 @@
 
   @include devices(md) {
     grid-template-columns: repeat(3, minmax(180px, 1fr));
-    // margin: auto;
   }
 
   @include devices(lg) {

@@ -11,8 +11,8 @@
   padding: 32px;
   width: 100%;
   gap: 32px;
-  background: #ffffff;
-  border: 1px solid #f2f2f2;
+  background: colors.$light;
+  border: 1px solid colors.$black_50;
   border-radius: 8px;
 
   @include devices(xs) {

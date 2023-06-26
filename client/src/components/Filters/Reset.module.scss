@@ -9,7 +9,7 @@
 
   button {
     @include label;
-    background: #ffffff;
+    background: colors.$light;
     padding: 11px 38px;
     cursor: pointer;
     border: 0;
