@@ -22,3 +22,88 @@
     width: 100%;
   }
 }
+
+.range {
+  position: relative;
+
+  input {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0;
+    z-index: 4;
+  }
+
+  .range {
+    background: #fdbc11;
+    border-radius: 50px;
+    top: 5px;
+    height: 15px;
+    z-index: 1;
+  }
+}
+
+.stepNumbers {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  width: 100%;
+  top: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & > span {
+    z-index: 3;
+    border-radius: 24px;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-family: Prompt;
+    line-height: 120%;
+  }
+}
+
+.columns_2 {
+  .stepNumbers {
+    > span:first-child {
+      background: #fdbc11;
+    }
+  }
+
+  .range {
+    width: 0;
+  }
+}
+.columns_3 {
+  .stepNumbers {
+    > span:nth-child(1),
+    span:nth-child(2) {
+      background: #fdbc11;
+    }
+  }
+  .range {
+    width: 50%;
+  }
+}
+.columns_4 {
+  .stepNumbers {
+    > span:nth-child(1),
+    span:nth-child(2),
+    span:nth-child(3) {
+      background: #fdbc11;
+    }
+  }
+  .range {
+    width: 100%;
+  }
+}
