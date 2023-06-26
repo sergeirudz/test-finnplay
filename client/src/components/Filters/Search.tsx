@@ -4,11 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import {
   selectFilterSearchTerm,
+  selectFilteredGames,
   setFilterSearchTerm,
 } from '../../store/slices/filterSlice';
 import { Game } from '../GamesList';
 import AsyncSelect from 'react-select/async';
-import { useGetGamesQuery } from '../../store/apis/gamesApi';
+import { useAppSelector } from '../../store';
 
 type SelectOptionType = {
   value: string;
@@ -18,11 +19,10 @@ type SelectOptionType = {
 const Search = () => {
   const dispatch = useDispatch();
   const searchTerm = useSelector(selectFilterSearchTerm);
-
-  const { data: gamesData } = useGetGamesQuery();
+  const gamesData = useAppSelector(selectFilteredGames);
 
   const options = useMemo(() => {
-    return gamesData?.games.map((game: Game) => ({
+    return gamesData.map((game: Game) => ({
       value: game.name,
       label: game.name,
     }));
