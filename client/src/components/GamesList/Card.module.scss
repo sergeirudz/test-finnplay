@@ -3,14 +3,11 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
-  // retain aspect ratio
+  border-radius: 8px;
 
   img {
     flex-shrink: 0;
     width: 100%;
     height: auto;
-    // min-width: 100%;
-    // min-height: 100%;
   }
 }
