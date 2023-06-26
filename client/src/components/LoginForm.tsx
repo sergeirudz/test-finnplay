@@ -1,61 +1,73 @@
 import styles from './LoginForm.module.scss';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Button from './Button';
 import Input from './Input';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useLoginUserMutation } from '../store/apis/authApi';
+import { useEffect } from 'react';
 
 const FormSchema = Yup.object().shape({
-  login: Yup.string().required('Username is required'),
+  username: Yup.string().required('Username is required'),
   password: Yup.string().required('Password is required'),
 });
 
-type FormValuesProps = {
-  login: string;
+export type LoginFormValuesProps = {
+  username: string;
   password: string;
 };
 
 const LoginForm = () => {
-  const navigate = useNavigate();
   const {
+    reset,
     handleSubmit,
     register,
-    formState: { isSubmitting },
-  } = useForm<FormValuesProps>({
+    formState: { isSubmitting, isSubmitSuccessful },
+  } = useForm<LoginFormValuesProps>({
     resolver: yupResolver(FormSchema),
     defaultValues: {
-      login: '',
+      username: '',
       password: '',
     },
   });
 
-  const onSubmit = async (data: FormValuesProps) => {
-    const response = await axios.post(
-      'user/login',
-      {
-        username: data.login,
-        password: data.password,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-    axios.defaults.headers.common[
-      'Authorization'
-    ] = `Bearer ${response.data.token}`;
+  const [loginUser, { isLoading, isError, error, isSuccess }] =
+    useLoginUserMutation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = ((location.state as any)?.from.pathname as string) || '/';
 
-    if (response.status === 200 && response.data.token) {
-      navigate('/');
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(from);
     }
+    if (isError) {
+      if (Array.isArray((error as any).data.error)) {
+        (error as any).data.error.forEach((el: any) => console.log(el.message));
+      } else {
+        console.log((error as any).data.error);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSubmitSuccessful]);
+
+  const onSubmit: SubmitHandler<LoginFormValuesProps> = (values) => {
+    loginUser(values);
   };
 
   return (
     <div className={styles.container}>
       <img src="/assets/logo.svg" alt="logo" className={styles.logo} />
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <Input label="login" register={register} required type="text" />
+        <Input label="username" register={register} required type="text" />
         <Input
           label="password"
           register={register}
