@@ -19,12 +19,7 @@ export type LoginFormValuesProps = {
 };
 
 const LoginForm = () => {
-  const {
-    handleSubmit,
-    register,
-
-    formState: { isSubmitting },
-  } = useForm<LoginFormValuesProps>({
+  const { handleSubmit, register } = useForm<LoginFormValuesProps>({
     resolver: yupResolver(FormSchema),
     defaultValues: {
       username: '',
@@ -62,7 +57,7 @@ const LoginForm = () => {
 
         <Button
           onClick={handleSubmit(onSubmit)}
-          loading={isSubmitting}
+          loading={isLoading}
           style={{ marginTop: '20px' }}
         >
           Login
