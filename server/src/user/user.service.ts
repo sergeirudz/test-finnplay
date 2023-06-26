@@ -9,11 +9,14 @@ export class UserService {
     @InjectRepository(User) protected readonly userRepository: Repository<User>,
   ) {}
 
-  async save(body: any): Promise<User> {
+  async save(body: { username: string; password: string }): Promise<User> {
     return await this.userRepository.save(body);
   }
 
-  async findOne(options: any): Promise<User | null> {
+  async findOne(options: {
+    id?: number;
+    username?: string;
+  }): Promise<User | null> {
     return await this.userRepository.findOneBy(options);
   }
 }

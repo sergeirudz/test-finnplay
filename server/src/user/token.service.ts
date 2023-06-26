@@ -10,11 +10,18 @@ export class TokenService {
     protected readonly userRepository: Repository<Token>,
   ) {}
 
-  async save(body: any): Promise<Token> {
+  async save(body: {
+    user_id: number;
+    token: string;
+    expired_at: Date;
+  }): Promise<Token> {
     return await this.userRepository.save(body);
   }
 
-  async findOne(options: any): Promise<Token | null> {
+  async findOne(options: {
+    user_id: number;
+    expired_at: Date;
+  }): Promise<Token | null> {
     return await this.userRepository.findOneBy(options);
   }
 

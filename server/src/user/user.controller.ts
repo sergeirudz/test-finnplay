@@ -42,7 +42,14 @@ export class UserController {
   ) {}
 
   @Post('register')
-  async register(@Body() body: any) {
+  async register(
+    @Body()
+    body: {
+      username: string;
+      password: string;
+      password_confirm: string;
+    },
+  ) {
     if (body.password !== body.password_confirm) {
       throw new BadRequestException('Passwords do not match');
     }
@@ -132,7 +139,7 @@ export class UserController {
 
       const tokenEntity = await this.tokenService.findOne({
         user_id: id,
-        expired_at: MoreThanOrEqual(new Date()),
+        expired_at: MoreThanOrEqual(new Date()) as unknown as Date,
       });
 
       if (!tokenEntity) {
