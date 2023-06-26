@@ -1,11 +1,15 @@
+// import { useDispatch } from 'react-redux';
 import styles from './Columns.module.scss';
+import { setFilterColumns } from '../../store/slices/filterSlice';
+import { useAppDispatch as useDispatch } from '../../store';
 
 type Props = {
   title: string;
-  setColumns: (option: string) => void;
 };
 
-const Columns = ({ title, setColumns }: Props) => {
+const Columns = ({ title }: Props) => {
+  const dispatch = useDispatch();
+
   return (
     <div className={styles.container}>
       <h4>{title}</h4>
@@ -14,7 +18,7 @@ const Columns = ({ title, setColumns }: Props) => {
         min="2"
         max="4"
         step="1"
-        onChange={(e) => setColumns(e.target.value)}
+        onChange={(e) => dispatch(setFilterColumns(e.target.value))}
       />
     </div>
   );

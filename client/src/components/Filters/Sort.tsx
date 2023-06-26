@@ -2,8 +2,8 @@ import styles from './Sort.module.scss';
 import { useDispatch } from 'react-redux';
 import {
   SortOptions,
-  selectSorting,
-  setSorting,
+  selectFilterSortBy,
+  setFilterSortBy,
 } from '../../store/slices/filterSlice';
 import { useSelector } from 'react-redux';
 
@@ -14,7 +14,7 @@ type Props = {
 
 const Sort = ({ title, hidden }: Props) => {
   const dispatch = useDispatch();
-  const sorting = useSelector(selectSorting);
+  const sorting = useSelector(selectFilterSortBy);
 
   return (
     <div
@@ -34,7 +34,7 @@ const Sort = ({ title, hidden }: Props) => {
               name="sort-option"
               value={SortOptions.NAME_ASC}
               checked={sorting === SortOptions.NAME_ASC}
-              onChange={() => dispatch(setSorting(SortOptions.NAME_ASC))}
+              onChange={() => dispatch(setFilterSortBy(SortOptions.NAME_ASC))}
             />
             A-Z
           </label>
@@ -50,7 +50,7 @@ const Sort = ({ title, hidden }: Props) => {
               name="sort-option"
               value={SortOptions.NAME_DESC}
               checked={sorting === SortOptions.NAME_DESC}
-              onChange={() => dispatch(setSorting(SortOptions.NAME_DESC))}
+              onChange={() => dispatch(setFilterSortBy(SortOptions.NAME_DESC))}
             />
             Z-A
           </label>
@@ -66,7 +66,7 @@ const Sort = ({ title, hidden }: Props) => {
               name="sort-option"
               value={SortOptions.NEWEST}
               checked={sorting === SortOptions.NEWEST}
-              onChange={() => dispatch(setSorting(SortOptions.NEWEST))}
+              onChange={() => dispatch(setFilterSortBy(SortOptions.NEWEST))}
             />
             Newest
           </label>

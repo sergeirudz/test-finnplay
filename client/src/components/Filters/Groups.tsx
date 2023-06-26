@@ -6,7 +6,7 @@ import {
   SortOptions,
   selectGroups,
   selectProviders,
-  selectSorting,
+  selectFilterSortBy,
 } from '../../store/slices/filterSlice';
 
 type Props = {
@@ -14,18 +14,19 @@ type Props = {
   data: Item;
   sort: (items: CheckedItems) => void;
   hidden?: boolean;
-  isFetching: number;
 };
 
-type Item = Provider[] | Group[];
+type Item = Provider[] | Group[] | undefined;
 
 export type CheckedItems = string[];
 
-const Groups = ({ title, data = [], sort, hidden, isFetching }: Props) => {
+const Groups = ({ title, data = [], sort, hidden }: Props) => {
   const [checkedItems, setCheckedItems] = useState<any>([]);
   const providers = useSelector(selectProviders);
   const groups = useSelector(selectGroups);
-  const sorting = useSelector(selectSorting);
+  const sorting = useSelector(selectFilterSortBy);
+  // const isLoading = useSelector(selectIsLoading);
+  const isLoading = false;
 
   useEffect(() => {
     if (
@@ -61,7 +62,7 @@ const Groups = ({ title, data = [], sort, hidden, isFetching }: Props) => {
     <div className={styles.item} style={{ display: hidden ? 'none' : 'block' }}>
       <h4>{title}</h4>
       <ul>
-        {isFetching && data.length === 0 ? (
+        {isLoading && data.length === 0 ? (
           <p>Loading...</p>
         ) : (
           data.map((item: Provider | Group) => (

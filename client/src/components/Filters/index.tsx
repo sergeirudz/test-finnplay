@@ -1,56 +1,60 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Columns from './Columns';
 import Groups, { CheckedItems } from './Groups';
 import Search from './Search';
 import Sort from './Sort';
 import styles from './index.module.scss';
 import Reset from './Reset';
-import { useQueryClient } from '@tanstack/react-query';
-import { useIsFetching } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
-import { setGroups, setProviders } from '../../store/slices/filterSlice';
+import {
+  selectGroups,
+  selectProviders,
+  setFilterColumns,
+  setFilterGroups,
+  setFilterProviders,
+  setProviders,
+} from '../../store/slices/filterSlice';
+import { useSelector } from 'react-redux';
+import { useGetGamesQuery } from '../../store/apis/gamesApi';
 
-type Props = {
-  setColumns: (option: string) => void;
-};
-
-const Filters = ({ setColumns }: Props) => {
+const Filters = () => {
   const [hidden, setHidden] = useState(false);
-  const isFetching = useIsFetching();
   const dispatch = useDispatch();
 
+  const {
+    data: gamesData,
+    error,
+    isLoading: isGamesLoading,
+    isSuccess: isGamesSuccess,
+  } = useGetGamesQuery();
+
   const sortProviders = (option: CheckedItems) => {
-    if (option.length === 0) return;
-    dispatch(setProviders(option));
+    dispatch(setFilterProviders(option));
   };
 
   const sortGroups = (option: CheckedItems) => {
-    if (option.length === 0) return;
-    dispatch(setGroups(option));
+    dispatch(setFilterGroups(option));
   };
-
-  const queryClient = useQueryClient();
-  const data: any = queryClient.getQueryData(['games']);
 
   return (
     <div className={`${styles.container} ${hidden && styles.hidden}`}>
       <Search />
+
       <Groups
         title="Providers"
-        data={data?.data?.providers}
+        data={gamesData?.providers}
         sort={sortProviders}
         hidden={hidden}
-        isFetching={isFetching}
       />
+
       <Groups
         title="Game groups"
-        data={data?.data?.groups}
+        data={gamesData?.groups}
         sort={sortGroups}
         hidden={hidden}
-        isFetching={isFetching}
       />
       <Sort title="Sorting" hidden={hidden} />
-      <Columns title="columns" setColumns={setColumns} />
+      <Columns title="columns" />
       <Reset hidden={hidden} />
       <button
         className={styles.hideFiltersBtn}

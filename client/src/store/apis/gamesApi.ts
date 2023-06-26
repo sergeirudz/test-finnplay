@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import customFetchBase from './customFetchBase';
 import { Game, Group, Provider } from '../../components/GamesList';
+import { setFilteredGames } from '../slices/filterSlice';
 
 interface GamesResponse {
   games: Game[];
@@ -18,7 +19,16 @@ export const gamesApi = createApi({
         return {
           url: 'games',
           credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            accept: 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('access_token'), // add access_token here
+          },
         };
+      },
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+        await dispatch(setFilteredGames(data.games));
       },
     }),
   }),

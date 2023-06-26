@@ -4,144 +4,166 @@ import classNames from 'classnames';
 import { Game, Group, Provider } from '.';
 import {
   SortOptions,
-  selectGroups,
-  selectProviders,
-  selectSortByName,
-  selectSorting,
-  setNrOfGames,
+  selectFilterColumns,
+  selectFilterGroups,
+  selectFilterProviders,
+  selectFilterSearchTerm,
+  selectFilterSortBy,
+  selectFilteredGames,
+  setFilterSearchTerm,
+  setFilteredGames,
 } from '../../store/slices/filterSlice';
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { useIsFetching, useQueryClient } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useGetGamesQuery } from '../../store/apis/gamesApi';
+import {
+  useAppDispatch as useDispatch,
+  useAppSelector as useSelector,
+} from '../../store';
 
-type Props = {
-  columnNumber: string;
-};
-
-const Games = ({ columnNumber }: Props) => {
-  const [games, setGames] = useState<Game[] | undefined>([]);
-  const providers = useSelector(selectProviders);
-  const groups = useSelector(selectGroups);
-  const sorting = useSelector(selectSorting);
-  const sortByName = useSelector(selectSortByName);
-  const isFetching = useIsFetching();
-  const queryClient = useQueryClient();
-  const dispatch = useDispatch();
-
+const Games = () => {
+  const columnNumber = useSelector(selectFilterColumns);
   const columns = classNames({
     [styles.columns_2]: columnNumber === '2',
     [styles.columns_3]: columnNumber === '3',
     [styles.columns_4]: columnNumber === '4',
   });
 
-  const filterByProviders = (games: Game[], providers: Provider[]): Game[] => {
-    if (providers.length === 0) return games;
+  const dispatch = useDispatch();
+  const filteredGames = useSelector(selectFilteredGames);
 
-    const filteredGames = games.filter((game) => {
-      return providers.some((provider) => {
-        return game.provider === provider.id;
-      });
-    });
+  const searchTerm = useSelector(selectFilterSearchTerm);
+  const filterProviders = useSelector(selectFilterProviders);
+  const filterGroups = useSelector(selectFilterGroups);
+  const sortBy = useSelector(selectFilterSortBy);
 
-    return filteredGames;
-  };
+  const {
+    data: gamesData,
+    error,
+    isLoading,
+    isSuccess: isGamesSuccess,
+  } = useGetGamesQuery();
 
-  const filterByGroup = (games: Game[], group: Group[]): Game[] => {
-    if (group.length === 0) return games;
+  useEffect(() => {
+    if (isGamesSuccess) {
+      dispatch(setFilteredGames(gamesData.games));
+    }
+  }, [gamesData]);
 
-    const gameIds = group.flatMap((groupObj) => groupObj.games);
-    return games.filter((game) => gameIds.includes(game.id));
-  };
+  useEffect(() => {
+    if (isGamesSuccess) {
+      dispatch(setFilterSearchTerm(''));
 
-  const mergeFilteredGames = (gamesArr1: Game[], gamesArr2: Game[]): Game[] => {
-    const combinedArr = [...gamesArr1, ...gamesArr2];
-    const uniqueGames = Array.from(new Set(combinedArr));
-    return uniqueGames;
-  };
-
-  const sortGames = (games: Game[], order: SortOptions): Game[] => {
-    let sortedGames;
-
-    if (order === SortOptions.NAME_ASC) {
-      sortedGames = games.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (order === SortOptions.NAME_DESC) {
-      sortedGames = games.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (order === SortOptions.NEWEST) {
-      sortedGames = games.sort(
-        (a, b) => (new Date(b.date) as any) - (new Date(a.date) as any)
+      //! filter by provider
+      const gamesFilteredByProviders = filterGamesByProviders(
+        gamesData.games,
+        filterProviders
       );
-    } else {
-      sortedGames = games.sort(
-        (a, b) => (new Date(a.date) as any) - (new Date(b.date) as any)
+
+      //! filter by group
+      const gamesFilteredByGroups = filterGamesByGroups(
+        gamesFilteredByProviders,
+        filterGroups
+      );
+      //! sort by
+      const sortedGames = sortGamesBy(gamesFilteredByGroups, sortBy);
+
+      dispatch(setFilteredGames(sortedGames));
+    }
+  }, [
+    filterProviders,
+    filterGroups,
+    sortBy,
+    dispatch,
+    isGamesSuccess,
+    gamesData,
+  ]);
+
+  useEffect(() => {
+    if (isGamesSuccess) {
+      dispatch(
+        setFilteredGames(filterGamesByName(gamesData.games, searchTerm))
       );
     }
-
-    return sortedGames;
-  };
-
-  const findGameById = (
-    games: Game[],
-    id: string | number
-  ): Game | undefined => {
-    return games.find((game) => game.id === id);
-  };
-
-  useEffect(() => {
-    (async () => {
-      const data: any = await queryClient.getQueryData(['games']);
-      setGames(data?.data?.games);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data: any = await queryClient.getQueryData(['games']);
-
-      const gamesFilteredByProviders = filterByProviders(
-        data?.data?.games,
-        providers
-      );
-      const gamesFilteredByGroup = filterByGroup(data?.data?.games, groups);
-
-      const filteredGames = mergeFilteredGames(
-        gamesFilteredByProviders,
-        gamesFilteredByGroup
-      );
-      const sortedGames = sortGames(filteredGames, sorting);
-
-      if (sortByName !== null) {
-        const foundGameByName = findGameById(data.data.games, sortByName.id);
-
-        const arr = [];
-        arr.push(foundGameByName as any);
-        setGames(arr);
-        console.log('foundGameByName', foundGameByName);
-      } else if (groups.length === 0 && providers.length !== 0) {
-        setGames(gamesFilteredByProviders);
-        dispatch(setNrOfGames(gamesFilteredByProviders.length));
-      } else if (providers.length === 0 && groups.length !== 0) {
-        setGames(gamesFilteredByGroup);
-        dispatch(setNrOfGames(gamesFilteredByGroup.length));
-      } else if (groups.length !== 0 && providers.length !== 0) {
-        setGames(filteredGames);
-        dispatch(setNrOfGames(filteredGames.length));
-      } else {
-        setGames(sortedGames);
-        dispatch(setNrOfGames(sortedGames.length));
-      }
-    })();
-  }, [providers, groups, sorting, sortByName]);
+  }, [searchTerm, dispatch, gamesData]);
 
   return (
     <div className={`${styles.container} ${columns}`}>
-      {isFetching ? (
+      {isLoading ? (
         <p>Loading...</p>
       ) : (
-        games?.map((game: Game, i) => <Card key={i} {...game} />)
+        filteredGames?.map((game: Game, i) => <Card key={i} {...game} />)
       )}
     </div>
   );
 };
 
 export default Games;
+
+function filterGamesByName(games: Game[], searchTerm: string) {
+  return games.filter((game) => {
+    const gameNameMatchesSearchTerm = game.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return gameNameMatchesSearchTerm;
+  });
+}
+
+function filterGamesByProviders(games: Game[], providers: Provider[]): Game[] {
+  if (providers.length === 0) return games;
+
+  const filteredGames = games.filter((game) => {
+    return providers.some((provider) => {
+      return game.provider === provider.id;
+    });
+  });
+
+  return filteredGames;
+}
+
+function filterGamesByGroups(games: Game[], group: Group[]): Game[] {
+  if (group.length === 0) return games;
+
+  const gameIds = group.flatMap((groupObj) => groupObj.games);
+  return games.filter((game) => gameIds.includes(game.id));
+}
+
+function sortGamesBy(games: Game[], sortBy: SortOptions): Game[] {
+  switch (sortBy) {
+    case SortOptions.NAME_ASC:
+      return games.slice().sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      });
+    case SortOptions.NAME_DESC:
+      return games.slice().sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+
+        if (nameA > nameB) {
+          return -1;
+        }
+        if (nameA < nameB) {
+          return 1;
+        }
+        return 0;
+      });
+    case SortOptions.NEWEST:
+      return games
+        .slice()
+        .sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+
+    default:
+      return games;
+  }
+}

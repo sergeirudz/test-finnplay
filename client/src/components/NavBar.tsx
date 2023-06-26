@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import styles from './NavBar.module.scss';
 import { useLogoutUserMutation } from '../store/apis/authApi';
+import { useAppSelector } from '../store';
+import { selectUsername } from '../store/slices/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
-  const username = '123';
+  const username = useAppSelector(selectUsername);
 
-  const [logoutUser, { isLoading, isSuccess, error, isError }] =
-    useLogoutUserMutation();
+  const navigate = useNavigate();
+  const [logoutUser, { isLoading, isSuccess }] = useLogoutUserMutation();
 
   const handleLogout = async () => {
     logoutUser();
@@ -14,7 +17,7 @@ const NavBar = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      window.location.href = '/login';
+      navigate('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);

@@ -1,13 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { Group, Provider } from '../../components/GamesList';
+import { Game, Group, Provider } from '../../components/GamesList';
 
 type FilterState = {
   providers: Provider[];
+  games: Game[];
+  filteredGames: Game[];
   groups: Group[];
-  sorting: SortOptions;
-  nrOfGames?: number;
-  sortByName: { [key: string]: string | number } | null;
+
+  filterOptions: {
+    filterProviders: Provider[];
+    filterGroups: Group[];
+    filterSearchTerm: string;
+    filterSortBy: SortOptions;
+    filterColumns: string;
+  };
 };
 
 export enum SortOptions {
@@ -17,11 +24,18 @@ export enum SortOptions {
 }
 
 const initialState: FilterState = {
+  games: [],
+  filteredGames: [],
   providers: [],
   groups: [],
-  sorting: SortOptions.NEWEST,
-  nrOfGames: 0,
-  sortByName: null,
+
+  filterOptions: {
+    filterProviders: [],
+    filterGroups: [],
+    filterSearchTerm: '',
+    filterSortBy: SortOptions.NEWEST,
+    filterColumns: '4',
+  },
 };
 
 export const filterSlice = createSlice({
@@ -34,36 +48,56 @@ export const filterSlice = createSlice({
     setGroups: (state, action) => {
       state.groups = action.payload;
     },
-    setSorting: (state, action) => {
-      state.sorting = action.payload;
+
+    setFilteredGames: (state, action) => {
+      state.filteredGames = action.payload;
     },
-    resetFilter: (state) => {
-      state.providers = [];
-      state.groups = [];
-      state.sorting = SortOptions.NEWEST;
-      state.sortByName = null;
+    setFilterProviders: (state, action) => {
+      state.filterOptions.filterProviders = action.payload;
     },
-    setNrOfGames: (state, action) => {
-      state.nrOfGames = action.payload;
+    setFilterGroups: (state, action) => {
+      state.filterOptions.filterGroups = action.payload;
     },
-    setSortByName: (state, action) => {
-      state.sortByName = action.payload;
+    setFilterSearchTerm: (state, action) => {
+      state.filterOptions.filterSearchTerm = action.payload;
     },
+    setFilterSortBy: (state, action) => {
+      state.filterOptions.filterSortBy = action.payload;
+    },
+    setFilterColumns: (state, action) => {
+      state.filterOptions.filterColumns = action.payload;
+    },
+    resetFilter: () => initialState,
   },
 });
 
 export const {
   setProviders,
   setGroups,
-  setSorting,
+  setFilteredGames,
+  setFilterProviders,
+  setFilterGroups,
+  setFilterSearchTerm,
+  setFilterSortBy,
+  setFilterColumns,
   resetFilter,
-  setNrOfGames,
-  setSortByName,
 } = filterSlice.actions;
+
+export const selectGames = (state: RootState) => state.filter.games;
+export const selectFilteredGames = (state: RootState) =>
+  state.filter.filteredGames;
 export const selectProviders = (state: RootState) => state.filter.providers;
 export const selectGroups = (state: RootState) => state.filter.groups;
-export const selectSorting = (state: RootState) => state.filter.sorting;
-export const selectNrOfGames = (state: RootState) => state.filter.nrOfGames;
-export const selectSortByName = (state: RootState) => state.filter.sortByName;
+
+export const selectFilterProviders = (state: RootState) =>
+  state.filter.filterOptions.filterProviders;
+export const selectFilterGroups = (state: RootState) =>
+  state.filter.filterOptions.filterGroups;
+export const selectFilterSearchTerm = (state: RootState) =>
+  state.filter.filterOptions.filterSearchTerm;
+export const selectFilterSortBy = (state: RootState) =>
+  state.filter.filterOptions.filterSortBy;
+export const selectFilterColumns = (state: RootState) =>
+  state.filter.filterOptions.filterColumns;
 
 export default filterSlice.reducer;

@@ -10,29 +10,34 @@ import storage from 'redux-persist/lib/storage';
 import filterSlice from './slices/filterSlice';
 import { gamesApi } from './apis/gamesApi';
 
-const persistConfig = {
-  key: 'root',
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+// };
+
+const userPersistConfig = {
+  key: 'user',
   storage,
 };
 
-const reducer = combineReducers({
-  user: userReducer,
+const rootReducer = combineReducers({
+  // user: userReducer,
+  user: persistReducer(userPersistConfig, userReducer),
   filter: filterSlice,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [gamesApi.reducerPath]: gamesApi.reducer,
 });
-const persistedReducer = persistReducer(persistConfig, reducer);
+// const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = persistReducer({ key: 'root', storage }, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
   devTools: NODE_ENV === 'development',
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({}).concat([
-      authApi.middleware,
-      userApi.middleware,
-      gamesApi.middleware,
-    ]),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat([authApi.middleware, userApi.middleware, gamesApi.middleware]),
 });
 export const persistor = persistStore(store);
 

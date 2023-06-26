@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import customFetchBase from './customFetchBase';
 import { LoginFormValuesProps } from '../../components/LoginForm';
 import { UserState, logout, setAuth } from '../slices/userSlice';
+import { resetFilter } from '../slices/filterSlice';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -20,6 +21,9 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(setAuth(data));
+
+          localStorage.setItem('access_token', data.access_token);
+          localStorage.setItem('refresh_token', data.refresh_token);
         } catch (error) {
           console.log(error);
         }
@@ -36,6 +40,9 @@ export const authApi = createApi({
         try {
           await queryFulfilled;
           dispatch(logout());
+          dispatch(resetFilter());
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
         } catch (error) {
           console.log(error);
         }

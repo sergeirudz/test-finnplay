@@ -1,35 +1,38 @@
-import { useQueryClient } from '@tanstack/react-query';
 import Select, {
   StylesConfig,
   components,
   DropdownIndicatorProps,
 } from 'react-select';
-
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  selectSortByName,
-  setSortByName,
-} from '../../store/slices/filterSlice';
 import { useSelector } from 'react-redux';
+import {
+  selectFilterSearchTerm,
+  setFilterSearchTerm,
+  selectFilteredGames,
+} from '../../store/slices/filterSlice';
+import { Game } from '../GamesList';
+
+type SelectOptionType = {
+  value: string;
+  label: string;
+};
 
 const Search = () => {
-  const queryClient = useQueryClient();
-  const [options, setOptions] = useState([]);
   const dispatch = useDispatch();
-  const sortByName = useSelector(selectSortByName);
+  const games = useSelector(selectFilteredGames);
+  const searchTerm = useSelector(selectFilterSearchTerm);
 
-  useEffect(() => {
-    (async () => {
-      const data: any = queryClient.getQueryData(['games']);
-      const OPTIONS = data?.data?.games.map((game: any) => ({
-        ...game,
-        value: game.name,
-        label: game.name,
-      }));
-      setOptions(OPTIONS);
-    })();
-  }, []);
+  const options = useMemo(() => {
+    return games.map((game: Game) => ({
+      value: game.name,
+      label: game.name,
+    }));
+  }, [games]);
+
+  const handleOptionChange = (e: SelectOptionType) => {
+    dispatch(setFilterSearchTerm(e.value));
+  };
 
   return (
     <>
@@ -42,9 +45,13 @@ const Search = () => {
         name="Search"
         placeholder="Search"
         options={options}
-        onChange={(e) => dispatch(setSortByName(e))}
-        value={sortByName}
-        key={`search_${sortByName}`}
+        onChange={(e) => handleOptionChange(e as SelectOptionType)}
+        value={
+          searchTerm !== ''
+            ? options.find((option) => option.value === searchTerm)
+            : ''
+        }
+        // key={`search_${sortByName}`}
       />
     </>
   );
