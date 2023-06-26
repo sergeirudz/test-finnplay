@@ -24,10 +24,18 @@ const NavBar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-        <img src="/assets/logo.svg" alt="logo" className={styles.logo} />
+        <a
+          href="https://www.finnplay.com/"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          <img src="/assets/logo.svg" alt="FinnPlay" className={styles.logo} />
+        </a>
         <nav className={styles.nav}>
           <ul>
-            <li>{username ? username : 'Not logged in'}</li>
+            <li className={styles.username}>
+              {username ? username : 'Not logged in'}
+            </li>
             <li>
               <button onClick={handleLogout}>
                 <img src="/assets/user.svg" alt="logout" />
