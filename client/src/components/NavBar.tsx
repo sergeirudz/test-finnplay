@@ -19,8 +19,7 @@ const NavBar = () => {
     if (isSuccess) {
       navigate('/login');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading, isSuccess, navigate]);
 
   return (
     <div className={styles.container}>
