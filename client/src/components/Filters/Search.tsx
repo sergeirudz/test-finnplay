@@ -1,8 +1,4 @@
-import Select, {
-  StylesConfig,
-  components,
-  DropdownIndicatorProps,
-} from 'react-select';
+import { StylesConfig, components, DropdownIndicatorProps } from 'react-select';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -12,6 +8,8 @@ import {
   selectFilteredGames,
 } from '../../store/slices/filterSlice';
 import { Game } from '../GamesList';
+import AsyncSelect from 'react-select/async';
+import { useGetGamesQuery } from '../../store/apis/gamesApi';
 
 type SelectOptionType = {
   value: string;
@@ -20,38 +18,53 @@ type SelectOptionType = {
 
 const Search = () => {
   const dispatch = useDispatch();
-  const games = useSelector(selectFilteredGames);
+  // const games = useSelector(selectFilteredGames);
   const searchTerm = useSelector(selectFilterSearchTerm);
 
+  const { data: gamesData } = useGetGamesQuery();
+
   const options = useMemo(() => {
-    return games.map((game: Game) => ({
+    return gamesData?.games.map((game: Game) => ({
       value: game.name,
       label: game.name,
     }));
-  }, [games]);
+  }, [gamesData]);
 
   const handleOptionChange = (e: SelectOptionType) => {
     dispatch(setFilterSearchTerm(e.value));
   };
 
+  const filterGames = (inputValue: string) => {
+    return options?.filter((i) =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+  };
+
+  const loadOptions = (
+    inputValue: string,
+    callback: (options: SelectOptionType[]) => void
+  ) => {
+    callback(filterGames(inputValue) as SelectOptionType[]);
+  };
+
   return (
     <>
-      <Select
+      <AsyncSelect
         classNamePrefix="select"
         styles={customStyles}
         components={{ DropdownIndicator }}
         closeMenuOnSelect={true}
-        isSearchable={true}
         name="Search"
         placeholder="Search"
-        options={options}
+        cacheOptions
+        loadOptions={loadOptions}
+        defaultOptions
         onChange={(e) => handleOptionChange(e as SelectOptionType)}
         value={
           searchTerm !== ''
-            ? options.find((option) => option.value === searchTerm)
+            ? options?.find((option) => option.value === searchTerm)
             : ''
         }
-        // key={`search_${sortByName}`}
       />
     </>
   );
@@ -60,13 +73,13 @@ const Search = () => {
 const customStyles: StylesConfig = {
   indicatorSeparator: (styles) => ({ ...styles, display: 'none' }),
   container: (styles) => ({ ...styles, width: '100%' }),
-  valueContainer: (styles) => ({ ...styles, padding: 0 }),
-  input: (styles) => ({ ...styles, padding: '22px 16px', margin: 0 }),
+  valueContainer: (styles) => ({ ...styles, padding: '22px 16px' }),
+  input: (styles) => ({ ...styles, padding: 0, margin: 0 }),
   dropdownIndicator: (styles) => ({ ...styles, paddingRight: '16px' }),
   placeholder: (styles) => ({
     ...styles,
     color: '#808080',
-    paddingLeft: '16px',
+    // paddingLeft: '16px',
     margin: 0,
     fontFamily: 'Prompt',
     fontWeight: 400,

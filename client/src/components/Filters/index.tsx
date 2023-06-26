@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import Columns from './Columns';
-import Groups, { CheckedItems } from './Groups';
+import Groups, { CheckedItem } from './Groups';
 import Search from './Search';
 import Sort from './Sort';
 import styles from './index.module.scss';
 import Reset from './Reset';
 import { useDispatch } from 'react-redux';
 import {
+  resetFilter,
   setFilterGroups,
   setFilterProviders,
 } from '../../store/slices/filterSlice';
@@ -15,14 +16,15 @@ import { useGetGamesQuery } from '../../store/apis/gamesApi';
 const Filters = () => {
   const [hidden, setHidden] = useState(false);
   const dispatch = useDispatch();
+  const [reset, setReset] = useState(false);
 
   const { data: gamesData } = useGetGamesQuery();
 
-  const sortProviders = (option: CheckedItems) => {
+  const sortProviders = (option: CheckedItem) => {
     dispatch(setFilterProviders(option));
   };
 
-  const sortGroups = (option: CheckedItems) => {
+  const sortGroups = (option: CheckedItem) => {
     dispatch(setFilterGroups(option));
   };
 
@@ -37,6 +39,11 @@ const Filters = () => {
     };
   }, []);
 
+  const handleReset = () => {
+    setReset(true);
+    dispatch(resetFilter());
+  };
+
   return (
     <div className={`${styles.container} ${hidden && styles.hidden}`}>
       <Search />
@@ -46,6 +53,8 @@ const Filters = () => {
         data={gamesData?.providers}
         sort={sortProviders}
         hidden={hidden}
+        reset={reset}
+        onResetComplete={() => setReset(false)}
       />
 
       <Groups
@@ -53,10 +62,12 @@ const Filters = () => {
         data={gamesData?.groups}
         sort={sortGroups}
         hidden={hidden}
+        reset={reset}
+        onResetComplete={() => setReset(false)}
       />
       <Sort title="Sorting" hidden={hidden} />
       <Columns title="columns" />
-      <Reset hidden={hidden} />
+      <Reset hidden={hidden} reset={handleReset} />
       <button
         className={styles.hideFiltersBtn}
         onClick={() => setHidden(!hidden)}

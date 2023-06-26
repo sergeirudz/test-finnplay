@@ -1,42 +1,30 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import styles from './Groups.module.scss';
 import { Group, Provider } from '../GamesList';
-import { useSelector } from 'react-redux';
-import {
-  SortOptions,
-  selectGroups,
-  selectProviders,
-  selectFilterSortBy,
-} from '../../store/slices/filterSlice';
 
 type Props = {
   title: string;
   data: Item;
-  sort: (items: CheckedItems) => void;
+  sort: (items: CheckedItem) => void;
   hidden?: boolean;
+  reset: boolean;
+  onResetComplete: () => void;
 };
 
 type Item = Provider[] | Group[] | undefined;
 
-export type CheckedItems = string[];
+export type CheckedItem = Record<any, any | number>;
 
-const Groups = ({ title, data = [], sort, hidden }: Props) => {
-  const [checkedItems, setCheckedItems] = useState<any>([]);
-  const providers = useSelector(selectProviders);
-  const groups = useSelector(selectGroups);
-  const sorting = useSelector(selectFilterSortBy);
-  // const isLoading = useSelector(selectIsLoading);
-  const isLoading = false;
+const Groups = ({
+  title,
+  data = [],
+  sort,
+  hidden,
 
-  useEffect(() => {
-    if (
-      providers.length === 0 &&
-      groups.length === 0 &&
-      sorting === SortOptions.NEWEST
-    ) {
-      setCheckedItems([]);
-    }
-  }, [providers, groups, sorting]);
+  reset,
+  onResetComplete,
+}: Props) => {
+  const [checkedItems, setCheckedItems] = useState<CheckedItem[]>([]);
 
   const handleCheckboxChange = (
     event: ChangeEvent<HTMLInputElement>,
@@ -49,53 +37,56 @@ const Groups = ({ title, data = [], sort, hidden }: Props) => {
       setCheckedItems([...checkedItems, item]);
     } else {
       setCheckedItems(
-        checkedItems.filter((item: Provider | Group) => item.name !== name)
+        checkedItems.filter((item: CheckedItem) => item.name !== name)
       );
     }
   };
 
   useEffect(() => {
     sort(checkedItems);
-  }, [checkedItems]);
+  }, [checkedItems, sort]);
+
+  useEffect(() => {
+    if (reset) {
+      setCheckedItems([]);
+      onResetComplete();
+    }
+  }, [reset, onResetComplete]);
 
   return (
     <div className={styles.item} style={{ display: hidden ? 'none' : 'block' }}>
       <h4>{title}</h4>
       <ul>
-        {isLoading && data.length === 0 ? (
-          <p>Loading...</p>
-        ) : (
-          data.map((item: Provider | Group) => (
-            <li
-              key={item.id}
-              className={
-                checkedItems.includes(item as never) ? styles.active : ''
-              }
+        {data.map((item: Provider | Group) => (
+          <li
+            key={item.id}
+            className={
+              checkedItems.includes(item as never) ? styles.active : ''
+            }
+          >
+            <input
+              type="checkbox"
+              name={item.name}
+              id={item.name}
+              onChange={(e) => handleCheckboxChange(e, item)}
+              className={styles.checkbox}
+              style={{
+                position: 'absolute',
+                opacity: 0,
+                cursor: 'pointer',
+              }}
+              checked={checkedItems.includes(item as never)}
+            />
+            <label
+              htmlFor={item.name}
+              style={{
+                cursor: 'pointer',
+              }}
             >
-              <input
-                type="checkbox"
-                name={item.name}
-                id={item.name}
-                onChange={(e) => handleCheckboxChange(e, item)}
-                className={styles.checkbox}
-                style={{
-                  position: 'absolute',
-                  opacity: 0,
-                  cursor: 'pointer',
-                }}
-                checked={checkedItems.includes(item as never)}
-              />
-              <label
-                htmlFor={item.name}
-                style={{
-                  cursor: 'pointer',
-                }}
-              >
-                {item.name}
-              </label>
-            </li>
-          ))
-        )}
+              {item.name}
+            </label>
+          </li>
+        ))}
       </ul>
     </div>
   );

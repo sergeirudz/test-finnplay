@@ -14,6 +14,7 @@ type FilterState = {
     filterSearchTerm: string;
     filterSortBy: SortOptions;
     filterColumns: string;
+    reset: boolean | undefined;
   };
 };
 
@@ -35,6 +36,7 @@ const initialState: FilterState = {
     filterSearchTerm: '',
     filterSortBy: SortOptions.NEWEST,
     filterColumns: '4',
+    reset: undefined,
   },
 };
 
@@ -99,5 +101,7 @@ export const selectFilterSortBy = (state: RootState) =>
   state.filter.filterOptions.filterSortBy;
 export const selectFilterColumns = (state: RootState) =>
   state.filter.filterOptions.filterColumns;
+export const selectResetFilter = (state: RootState) =>
+  state.filter.filterOptions.reset;
 
 export default filterSlice.reducer;
