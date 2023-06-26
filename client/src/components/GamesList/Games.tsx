@@ -38,7 +38,6 @@ const Games = () => {
 
   const {
     data: gamesData,
-    error,
     isLoading,
     isSuccess: isGamesSuccess,
   } = useGetGamesQuery();
@@ -47,24 +46,21 @@ const Games = () => {
     if (isGamesSuccess) {
       dispatch(setFilteredGames(gamesData.games));
     }
-  }, [gamesData]);
+  }, [gamesData, dispatch, isGamesSuccess]);
 
   useEffect(() => {
     if (isGamesSuccess) {
       dispatch(setFilterSearchTerm(''));
 
-      //! filter by provider
       const gamesFilteredByProviders = filterGamesByProviders(
         gamesData.games,
         filterProviders
       );
 
-      //! filter by group
       const gamesFilteredByGroups = filterGamesByGroups(
         gamesFilteredByProviders,
         filterGroups
       );
-      //! sort by
       const sortedGames = sortGamesBy(gamesFilteredByGroups, sortBy);
 
       dispatch(setFilteredGames(sortedGames));
@@ -84,7 +80,7 @@ const Games = () => {
         setFilteredGames(filterGamesByName(gamesData.games, searchTerm))
       );
     }
-  }, [searchTerm, dispatch, gamesData]);
+  }, [searchTerm, dispatch, gamesData, isGamesSuccess]);
 
   return (
     <div className={`${styles.container} ${columns}`}>

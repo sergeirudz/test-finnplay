@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 import customFetchBase from './customFetchBase';
 import { Game, Group, Provider } from '../../components/GamesList';
@@ -23,12 +23,12 @@ export const gamesApi = createApi({
           headers: {
             'Content-Type': 'application/json',
             accept: 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('access_token'), // add access_token here
+            Authorization: 'Bearer ' + localStorage.getItem('access_token'),
           },
         };
       },
       providesTags: ['games'],
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         await dispatch(setFilteredGames(data.games));
       },

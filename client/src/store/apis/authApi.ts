@@ -17,7 +17,7 @@ export const authApi = createApi({
           credentials: 'include',
         };
       },
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(setAuth(data));
@@ -36,7 +36,7 @@ export const authApi = createApi({
           credentials: 'include',
         };
       },
-      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
           dispatch(logout());

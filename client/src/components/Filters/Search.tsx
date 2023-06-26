@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import {
   selectFilterSearchTerm,
   setFilterSearchTerm,
-  selectFilteredGames,
 } from '../../store/slices/filterSlice';
 import { Game } from '../GamesList';
 import AsyncSelect from 'react-select/async';
@@ -18,7 +17,6 @@ type SelectOptionType = {
 
 const Search = () => {
   const dispatch = useDispatch();
-  // const games = useSelector(selectFilteredGames);
   const searchTerm = useSelector(selectFilterSearchTerm);
 
   const { data: gamesData } = useGetGamesQuery();
@@ -79,7 +77,7 @@ const customStyles: StylesConfig = {
   placeholder: (styles) => ({
     ...styles,
     color: '#808080',
-    // paddingLeft: '16px',
+
     margin: 0,
     fontFamily: 'Prompt',
     fontWeight: 400,
