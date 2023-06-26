@@ -23,4 +23,10 @@
   gap: 20px;
   max-width: 412px;
   width: 100%;
+
+  input {
+    font-size: 16px;
+    line-height: 120%;
+    color: colors.$black_dark;
+  }
 }

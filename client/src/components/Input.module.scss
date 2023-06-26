@@ -19,7 +19,6 @@
     padding: 14px 16px;
 
     label {
-      //TODO figma error font-family: 'Commissioner';
       @include label;
       position: absolute;
       color: colors.$black_semi;

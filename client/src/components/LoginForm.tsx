@@ -20,10 +20,10 @@ export type LoginFormValuesProps = {
 
 const LoginForm = () => {
   const {
-    reset,
     handleSubmit,
     register,
-    formState: { isSubmitting, isSubmitSuccessful },
+
+    formState: { isSubmitting },
   } = useForm<LoginFormValuesProps>({
     resolver: yupResolver(FormSchema),
     defaultValues: {
@@ -32,32 +32,16 @@ const LoginForm = () => {
     },
   });
 
-  const [loginUser, { isLoading, isError, error, isSuccess }] =
-    useLoginUserMutation();
+  const [loginUser, { isLoading, isError, isSuccess }] = useLoginUserMutation();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = ((location.state as any)?.from.pathname as string) || '/';
+  const from = location.state?.from.pathname || '/login';
 
   useEffect(() => {
     if (isSuccess) {
       navigate(from);
     }
-    if (isError) {
-      if (Array.isArray((error as any).data.error)) {
-        (error as any).data.error.forEach((el: any) => console.log(el.message));
-      } else {
-        console.log((error as any).data.error);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSubmitSuccessful]);
+  }, [isLoading, isSuccess, navigate, from]);
 
   const onSubmit: SubmitHandler<LoginFormValuesProps> = (values) => {
     loginUser(values);
@@ -84,6 +68,7 @@ const LoginForm = () => {
           Login
         </Button>
       </form>
+      {isError ? <p style={{ color: 'red' }}>Invalid credentials</p> : null}
     </div>
   );
 };
