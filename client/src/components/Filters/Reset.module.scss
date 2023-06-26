@@ -16,6 +16,17 @@
     box-shadow: 0px -2px 18px rgba(128, 128, 128, 0.1);
     border-radius: 4px;
     color: colors.$black_semi;
+
+    &:hover {
+      color: colors.$black_dark;
+      box-shadow: 0px 0px 4px 0px rgba(128, 128, 128, 0.06);
+    }
+
+    &:active {
+      color: colors.$black_dark;
+      background: colors.$black_25;
+      box-shadow: 0px 0px 4px 0px rgba(128, 128, 128, 0.06);
+    }
   }
 
   h4 {
