@@ -7,26 +7,16 @@ import styles from './index.module.scss';
 import Reset from './Reset';
 import { useDispatch } from 'react-redux';
 import {
-  selectGroups,
-  selectProviders,
-  setFilterColumns,
   setFilterGroups,
   setFilterProviders,
-  setProviders,
 } from '../../store/slices/filterSlice';
-import { useSelector } from 'react-redux';
 import { useGetGamesQuery } from '../../store/apis/gamesApi';
 
 const Filters = () => {
   const [hidden, setHidden] = useState(false);
   const dispatch = useDispatch();
 
-  const {
-    data: gamesData,
-    error,
-    isLoading: isGamesLoading,
-    isSuccess: isGamesSuccess,
-  } = useGetGamesQuery();
+  const { data: gamesData } = useGetGamesQuery();
 
   const sortProviders = (option: CheckedItems) => {
     dispatch(setFilterProviders(option));
@@ -35,6 +25,17 @@ const Filters = () => {
   const sortGroups = (option: CheckedItems) => {
     dispatch(setFilterGroups(option));
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isDesktop = window.innerWidth >= 1024;
+      setHidden(!isDesktop);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className={`${styles.container} ${hidden && styles.hidden}`}>
