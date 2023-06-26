@@ -8,6 +8,7 @@ import { Mutex } from 'async-mutex';
 
 import { BACKEND_URL } from '../../config';
 import { logout } from '../slices/userSlice';
+import { RootState } from '..';
 
 const baseUrl = `${BACKEND_URL}`;
 
@@ -15,6 +16,15 @@ const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).user.access_token;
+
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  },
 });
 
 const customFetchBase: BaseQueryFn<
@@ -30,7 +40,14 @@ const customFetchBase: BaseQueryFn<
 
       try {
         const refreshResult = await baseQuery(
-          { credentials: 'include', url: 'auth/refresh' },
+          {
+            credentials: 'include',
+            url: 'auth/refresh',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: 'Bearer ' + localStorage.getItem('refresh_token'),
+            },
+          },
           api,
           extraOptions
         );
