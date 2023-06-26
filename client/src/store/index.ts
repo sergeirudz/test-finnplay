@@ -10,25 +10,18 @@ import storage from 'redux-persist/lib/storage';
 import filterSlice from './slices/filterSlice';
 import { gamesApi } from './apis/gamesApi';
 
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
-
 const userPersistConfig = {
   key: 'user',
   storage,
 };
 
 const rootReducer = combineReducers({
-  // user: userReducer,
   user: persistReducer(userPersistConfig, userReducer),
   filter: filterSlice,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [gamesApi.reducerPath]: gamesApi.reducer,
 });
-// const persistedReducer = persistReducer(persistConfig, reducer);
 const persistedReducer = persistReducer({ key: 'root', storage }, rootReducer);
 
 export const store = configureStore({

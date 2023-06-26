@@ -11,9 +11,27 @@ import {
 import { UserService } from './user.service';
 import * as bcryptjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { TokenService } from './token.service';
 import { MoreThanOrEqual } from 'typeorm';
+import {
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from 'src/config/config';
+
+const accessTokenCookieOptions: CookieOptions = {
+  expires: new Date(ACCESS_TOKEN_EXPIRES_IN * 60 * 1000),
+  maxAge: ACCESS_TOKEN_EXPIRES_IN * 60 * 1000,
+  httpOnly: true,
+  sameSite: 'lax',
+};
+
+const refreshTokenCookieOptions: CookieOptions = {
+  expires: new Date(REFRESH_TOKEN_EXPIRES_IN * 60 * 1000),
+  maxAge: REFRESH_TOKEN_EXPIRES_IN * 60 * 1000,
+  httpOnly: true,
+  sameSite: 'lax',
+};
 
 @Controller('user')
 export class UserController {
@@ -54,31 +72,37 @@ export class UserController {
       throw new BadRequestException('Invalid credentials');
     }
 
-    const accessToken = await this.jwtService.signAsync(
+    const access_token = await this.jwtService.signAsync(
       { id: user.id },
       {
         expiresIn: '30s',
       },
     );
 
-    const refreshToken = await this.jwtService.signAsync({ id: user.id });
+    const refresh_token = await this.jwtService.signAsync({ id: user.id });
 
     const expired_at = new Date();
     expired_at.setDate(expired_at.getDate() + 7);
     await this.tokenService.save({
       user_id: user.id,
-      token: refreshToken,
+      token: refresh_token,
       expired_at,
     });
 
     response.status(200);
-    response.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 1w
+
+    response.cookie('access_token', access_token, accessTokenCookieOptions);
+    response.cookie('refresh_token', refresh_token, refreshTokenCookieOptions);
+    response.cookie('logged_in', true, {
+      ...accessTokenCookieOptions,
+      httpOnly: false,
     });
 
     return {
-      token: accessToken,
+      username: user.username,
+      logged_in: true,
+      access_token: access_token,
+      refresh_token: refresh_token,
     };
   }
 
@@ -131,13 +155,15 @@ export class UserController {
     }
   }
 
-  @Post('logout')
+  @Get('logout')
   async logout(
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
   ) {
     await this.tokenService.delete({ token: request.cookies.refresh_token });
     response.clearCookie('refresh_token');
+    response.clearCookie('access_token');
+    response.clearCookie('logged_in');
     return {
       message: 'success',
     };

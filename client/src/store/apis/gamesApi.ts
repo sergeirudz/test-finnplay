@@ -13,6 +13,7 @@ interface GamesResponse {
 export const gamesApi = createApi({
   reducerPath: 'gamesApi',
   baseQuery: customFetchBase,
+  tagTypes: ['games'],
   endpoints: (builder) => ({
     getGames: builder.query<GamesResponse, void>({
       query() {
@@ -26,6 +27,7 @@ export const gamesApi = createApi({
           },
         };
       },
+      providesTags: ['games'],
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         await dispatch(setFilteredGames(data.games));
