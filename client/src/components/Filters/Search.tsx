@@ -46,25 +46,23 @@ const Search = () => {
   };
 
   return (
-    <>
-      <AsyncSelect
-        classNamePrefix="select"
-        styles={customStyles}
-        components={{ DropdownIndicator }}
-        closeMenuOnSelect={true}
-        name="Search"
-        placeholder="Search"
-        cacheOptions
-        loadOptions={loadOptions}
-        defaultOptions={options}
-        onChange={(e) => handleOptionChange(e as SelectOptionType)}
-        value={
-          searchTerm !== ''
-            ? options?.find((option) => option.value === searchTerm)
-            : ''
-        }
-      />
-    </>
+    <AsyncSelect
+      classNamePrefix="select"
+      styles={customStyles}
+      components={{ DropdownIndicator }}
+      closeMenuOnSelect={true}
+      name="Search"
+      placeholder="Search"
+      cacheOptions
+      loadOptions={loadOptions}
+      defaultOptions={options}
+      onChange={(e) => handleOptionChange(e as SelectOptionType)}
+      value={
+        searchTerm !== ''
+          ? options?.find((option) => option.value === searchTerm)
+          : ''
+      }
+    />
   );
 };
 
