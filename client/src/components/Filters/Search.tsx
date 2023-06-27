@@ -56,7 +56,7 @@ const Search = () => {
         placeholder="Search"
         cacheOptions
         loadOptions={loadOptions}
-        defaultOptions
+        defaultOptions={options}
         onChange={(e) => handleOptionChange(e as SelectOptionType)}
         value={
           searchTerm !== ''
